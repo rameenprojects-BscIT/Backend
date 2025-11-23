@@ -47,12 +47,20 @@ app.get('/collection/:collectionName', (req, res, next) => {
 // importing mongodb object id to query documents by their ids
 const ObjectID = require('mongodb').ObjectID;
 
-// getting one item/document by its mongodb objectId
+// getting one lesson/document by its mongodb objectId
 app.get('/collection/:collectionName/:id',(req,res,next)=>{
     req.collection.findOne({_id: new ObjectID(req.params.id)},(e,result)=>{
         if (e) return next(e)
             res.send(result)
     })
+});
+
+// setting the post to insert the orders to the collections
+app.post('/collection/:collectionName', (req, res, next)=>{
+    req.collection.insert(req.body, (e, results) => {
+        if (e) return next (e)
+            res.send(results.ops)
+    });
 });
 
 app.listen(3000, () => {
