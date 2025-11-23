@@ -25,6 +25,17 @@ MongoClient.connect('mongodb+srv://rg818:rJun2005Mongo@cst3144-m00914912.zzz7nsb
         db = client.db("AfterschoolApp");
     });
 
+// setting the root route
+app.get('/', (req, res, next) => {
+    res.send("select a collection, e.g., /collection/messages")
+});
+
+// setting the middleware that will automatically run when the route has the collection name
+app.param("collectionName", (req, res, next, collectionName) => {
+    req.collection = db.collection(collectionName);
+    return next();
+});
+
 app.listen(3000, () => {
     console.log("express.js server is running on localhost:3000");
 });
