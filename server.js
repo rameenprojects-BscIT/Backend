@@ -36,6 +36,25 @@ app.param("collectionName", (req, res, next, collectionName) => {
     return next();
 });
 
+// getting all items in the collection, by converting the result to array and sedning it as response
+app.get('/collection/:collectionName', (req, res, next) => {
+    req.collection.find({}).toArray((e, results) => {
+        if (e) return next (e);
+        res.send(results);
+    });
+});
+
+// importing mongodb object id to query documents by their ids
+const ObjectID = require('mongodb').ObjectID;
+
+// getting one item/document by its mongodb objectId
+app.get('/collection/:collectionName/:id',(req,res,next)=>{
+    req.collection.findOne({_id: new ObjectID(req.params.id)},(e,result)=>{
+        if (e) return next(e)
+            res.send(result)
+    })
+});
+
 app.listen(3000, () => {
     console.log("express.js server is running on localhost:3000");
 });
