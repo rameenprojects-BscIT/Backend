@@ -1,0 +1,10 @@
+ {
+    "name": "after-school-backend",
+    "author": "rameen",
+    "private": true,
+    "scripts": {
+        "start": "nodemon server.js"
+    },
+    "dependencies": {
+    }
+}
