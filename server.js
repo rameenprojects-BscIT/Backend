@@ -63,6 +63,19 @@ app.post('/collection/:collectionName', (req, res, next)=>{
     });
 });
 
+
+app.put('/collection/:collectionName/:id',(req,res,next) => {
+    req.collection.update(
+        {_id: new ObjectID(req.params.id)},
+        {$set: req.body},
+        {safe: true, multi: false}, 
+        (e, result) => {
+            if (e) return next (e)
+                res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'})
+        
+    });
+});
+
 app.listen(3000, () => {
     console.log("express.js server is running on localhost:3000");
 });
