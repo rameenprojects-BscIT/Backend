@@ -16,6 +16,15 @@ app.use((req, res, next) => {
     next();
 });
 
+const MongoClient = require("mongodb").MongoClient;
+
+let db;
+
+MongoClient.connect('mongodb+srv://rg818:rJun2005Mongo@cst3144-m00914912.zzz7nsb.mongodb.net/', 
+    (err, client) => {
+        db = client.db("AfterschoolApp");
+    });
+
 app.listen(3000, () => {
     console.log("express.js server is running on localhost:3000");
 });
