@@ -1,7 +1,6 @@
 const express = require("express");
 // creating an express application instance to define routes
 const app = express();
-app.set('PORT', 3000);
 
 // added middleware to the app that automatically parses incoming JSON requests
 app.use(express.json());
@@ -82,7 +81,7 @@ app.delete('/collection/:collectionName/:id',(req,res,next)=>{
     });
 });
 
-
-app.listen(3000, () => {
-    console.log("express.js server is running on localhost:3000");
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+    console.log("express.js server is running");
 });
