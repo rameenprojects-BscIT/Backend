@@ -19,10 +19,8 @@ app.use((req, res, next) => {
 const MongoClient = require("mongodb").MongoClient;
 
 let db;
-
 MongoClient.connect('mongodb+srv://rg818:rJun2005Mongo@cst3144-m00914912.zzz7nsb.mongodb.net/', (err, client) => {
     db = client.db("AfterschoolApp");
-    console.log("db connected");
 });
 
 // setting the root route
@@ -73,6 +71,14 @@ app.put('/collection/:collectionName/:id',(req,res,next) => {
             if (e) return next (e)
                 res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'})
         
+    });
+});
+
+// deleting an object with objectID
+app.delete('/collection/:collectionName/:id',(req,res,next)=>{
+    req.collection.deleteOne({_id: new ObjectID(req.params.id)},(e,result)=>{
+        if (e) return next(e)
+             res.send((result.result.n === 1) ? {msg: 'success'} : {msg:'error'})
     });
 });
 
