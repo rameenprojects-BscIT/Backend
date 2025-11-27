@@ -4,6 +4,8 @@ const app = express();
 
 // added middleware to the app that automatically parses incoming JSON requests
 app.use(express.json());
+var path = require("path");
+var fs = require("fs");
 
 // setting the cors headers
 app.use((req, res, next) => {
@@ -15,6 +17,13 @@ app.use((req, res, next) => {
     next();
 })
 
+// the 'logger' middleware
+app.use(function(req, res, next) {
+    console.log("Request IP: " + req.url);
+    console.log("Request date: " + new Date());
+    next();
+});
+
 const MongoClient = require("mongodb").MongoClient;
 
 let db;
@@ -25,6 +34,29 @@ MongoClient.connect('mongodb+srv://rg818:rJun2005Mongo@cst3144-m00914912.zzz7nsb
 // setting the root route
 app.get('/', (req, res, next) => {
     res.send("select a collection, e.g., /collection/messages")
+});
+
+// static file middleware
+app.use(function(req,res,next){
+    var filePath = path.join(__dirname,"static",req.url);
+    fs.stat(filePath, function(err, fileInfo){
+        if (err){
+            next();
+            return;
+        }
+
+        if (fileInfo.isFile()){
+            res.sendFile(filePath);
+        } else{
+            next();
+        }
+
+    });
+});
+
+app.use(function(req, res){
+    res.status(404);
+    res.send("File not found!");
 });
 
 // setting the middleware that will automatically run when the route has the collection name
@@ -83,5 +115,5 @@ app.delete('/collection/:collectionName/:id',(req,res,next)=>{
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
-    console.log("express.js server is running");
+    console.log("App started on port: " + port);
 });
