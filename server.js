@@ -36,28 +36,6 @@ app.get('/', (req, res, next) => {
     res.send("select a collection, e.g., /collection/messages")
 });
 
-// static file middleware
-app.use(function(req,res,next){
-    var filePath = path.join(__dirname,"static",req.url);
-    fs.stat(filePath, function(err, fileInfo){
-        if (err){
-            next();
-            return;
-        }
-
-        if (fileInfo.isFile()){
-            res.sendFile(filePath);
-        } else{
-            next();
-        }
-
-    });
-});
-
-app.use(function(req, res){
-    res.status(404);
-    res.send("File not found!");
-});
 
 // setting the middleware that will automatically run when the route has the collection name
 app.param("collectionName", (req, res, next, collectionName) => {
@@ -112,6 +90,30 @@ app.delete('/collection/:collectionName/:id',(req,res,next)=>{
              res.send((result.result.n === 1) ? {msg: 'success'} : {msg:'error'})
     });
 });
+
+// static file middleware
+app.use(function(req,res,next){
+    var filePath = path.join(__dirname,"static",req.url);
+    fs.stat(filePath, function(err, fileInfo){
+        if (err){
+            next();
+            return;
+        }
+
+        if (fileInfo.isFile()){
+            res.sendFile(filePath);
+        } else{
+            next();
+        }
+
+    });
+});
+
+app.use(function(req, res){
+    res.status(404);
+    res.send("File not found!");
+});
+
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
