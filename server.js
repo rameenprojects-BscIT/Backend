@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 var path = require("path");
 var fs = require("fs");
-
+const cors = require("cors");
 // setting the cors headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,7 +14,9 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT");
     res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next();
-})
+});
+
+app.use(cors());
 
 // the 'logger' middleware
 app.use(function(req, res, next) {
@@ -108,6 +110,10 @@ app.use(function(req,res,next){
     });
 });
 
+app.use(function(req, res){
+    res.status(404);
+    res.send("File not found!");
+});
 
 
 const port = process.env.PORT || 3000
