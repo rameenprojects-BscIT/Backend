@@ -92,6 +92,22 @@ app.delete('/collection/:collectionName/:id',(req,res,next)=>{
     });
 });
 
+app.get('/search', (req, res, next) => {
+    const query = req.query.q;
+
+    if(!query) {
+        return res.send([]);
+    }
+
+    db.collection("lessons")
+        .find({subject: query})
+        .toArray((err, results) => {
+            if (err) return next (err);
+            res.send(results);
+        });
+
+});
+
 // static file middleware
 app.use(function(req,res,next){
     var filePath = path.join(__dirname,"static",req.url);
