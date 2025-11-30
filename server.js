@@ -99,8 +99,17 @@ app.get('/search', (req, res, next) => {
         return res.send([]);
     }
 
+    const searchRegex = new RegExp(query, "i");
+
     db.collection("lessons")
-        .find({subject: query})
+        .find({
+            $or: [
+                {subject: searchRegex},
+                {location: searchRegex},
+                {price: searchRegex},
+                {spaces: searchRegex}
+            ]
+        })
         .toArray((err, results) => {
             if (err) return next (err);
             res.send(results);
