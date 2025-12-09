@@ -98,7 +98,7 @@ app.get('/search/:collectionName', (req, res, next) => {
     const query = req.query.q;
 
      if(!query) {
-        return res.send([]);
+        return res.json([]);
     }
 
     req.collection.find({
@@ -115,7 +115,7 @@ app.get('/search/:collectionName', (req, res, next) => {
         let searchQuery = JSON.stringify(query);
         console.log(new Date() + `- search term: ${searchQuery} in ${req.params.collectionName}`);
 
-        res.send(results);
+        res.json(results);
     });
 
 });
