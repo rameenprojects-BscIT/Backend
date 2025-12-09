@@ -101,12 +101,13 @@ app.get('/search/:collectionName', (req, res, next) => {
         return res.json([]);
     }
 
+
     req.collection.find({
         $or: [
             {subject: {$regex: query, $options: "i"}},
             {location: {$regex: query, $options: "i"}},
-            {price: {$regex: query, $options: "i"}},
-            {spaces: {$regex: query, $options: "i"}}
+            {price: parseInt(query)},
+            {spaces: parseInt(query)}
         ]
     })
     .toArray((err, results) => {
