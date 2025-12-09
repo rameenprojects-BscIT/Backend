@@ -86,34 +86,37 @@ app.put('/collection/:collectionName/:id',(req,res,next) => {
 
 // deleting an object with objectID
 app.delete('/collection/:collectionName/:id',(req,res,next)=>{
-    req.collection.deleteOne({_id: new ObjectID(req.params.id)},(e,result)=>{
-        if (e) return next(e)
-             res.send((result.result.n === 1) ? {msg: 'success'} : {msg:'error'})
+    req.collection.deleteOne(
+        {_id: new ObjectID(req.params.id)},
+        (e,result)=>{
+            if (e) return next(e)
+                res.send((result.result.n === 1) ? {msg: 'success'} : {msg:'error'})
     });
 });
 
-app.get('/search', (req, res, next) => {
+app.get('/search/:collectionName', (req, res, next) => {
     const query = req.query.q;
 
-    if(!query) {
+     if(!query) {
         return res.send([]);
     }
 
-    const searchRegex = new RegExp(query, "i");
+    req.collection.find({
+        $or: [
+            {subject: {$regex: query, $options: "i"}},
+            {location: {$regex: query, $options: "i"}},
+            {price: {$regex: query, $options: "i"}},
+            {spaces: {$regex: query, $options: "i"}}
+        ]
+    })
+    .toArray((err, results) => {
+        if (err) return next (err);
+        
+        let searchQuery = JSON.stringify(query);
+        console.log(new Date() + `- search term: ${searchQuery} in ${req.params.collectionName}`);
 
-    db.collection("lessons")
-        .find({
-            $or: [
-                {subject: searchRegex},
-                {location: searchRegex},
-                {price: searchRegex},
-                {spaces: searchRegex}
-            ]
-        })
-        .toArray((err, results) => {
-            if (err) return next (err);
-            res.send(results);
-        });
+        res.send(results);
+    });
 
 });
 
